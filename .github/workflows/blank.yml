@@ -1,0 +1,33 @@
+name: KartalClient Derleme
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu indir
+        uses: actions/checkout@v4
+
+      - name: Java kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: ZIP dosyasını aç
+        run: |
+          unzip -o Kartal-client-tenplate-26.2.zip -d proje
+          find proje -name gradlew -exec chmod +x {} \;
+
+      - name: JAR derle
+        run: |
+          cd proje
+          ./gradlew build
+
+      - name: JAR dosyalarını yayınla
+        uses: actions/upload-artifact@v4
+        with:
+          name: KartalClient-JAR
+          path: proje/**/build/libs/*.jar
